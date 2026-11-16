@@ -6,6 +6,4 @@ const server = http.createServer((req, res) => {
   res.end('Todo app is running\n');
 });
 
-server.listen(PORT, () =>
-  console.log(`Server started at port http://localhost:${PORT}/`),
-);
+server.listen(PORT, () => console.log(`Server started in port ${PORT}`));
