@@ -12,9 +12,20 @@ spec:
       labels:
         app: log-output
     spec:
+      volumes:
+        - name: shared-logs
+          emptyDir: {}
       containers:
-        - name: log-output
-          image: 0455/log-output:1.7
+        - name: log-output-writer
+          image: 0455/log-output-writer:1.10
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /usr/src/app/files
+        - name: log-output-reader
+          image: 0455/log-output-reader:1.10
           env:
             - name: PORT
               value: '3000'
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /usr/src/app/files
