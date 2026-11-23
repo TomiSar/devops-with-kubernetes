@@ -79,14 +79,68 @@ const server = http.createServer((req, res) => {
         <head>
           <title>The Project</title>
           <style>
-            body { font-family: sans-serif; text-align: center; margin-top: 2rem; }
-            img { max-width: 400px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+            body {
+              font-family: sans-serif;
+              max-width: 600px;
+              margin: 2rem auto;
+              text-align: center;
+              color: #222;
+            }
+            img {
+              max-width: 300px;
+              border-radius: 10px;
+              box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+              margin-bottom: 1.5rem;
+            }
+            form {
+              display: flex;
+              gap: 0.5rem;
+              justify-content: center;
+              margin-bottom: 2rem;
+            }
+            input[type="text"] {
+              flex: 1;
+              padding: 0.6rem 0.8rem;
+              font-size: 1rem;
+              border: 2px solid #2e8b57;
+              border-radius: 6px;
+            }
+            button {
+              padding: 0.6rem 1.2rem;
+              font-size: 1rem;
+              background-color: #3cb371;
+              color: white;
+              border: none;
+              border-radius: 6px;
+              cursor: pointer;
+            }
+            ul {
+              list-style: none;
+              padding: 0;
+              text-align: left;
+            }
+            li {
+              background: #f8f9fa;
+              border-left: 4px solid #3cb371;
+              padding: 0.8rem 1rem;
+              margin-bottom: 0.6rem;
+              border-radius: 4px;
+            }
           </style>
         </head>
         <body>
           <h1>Todo App</h1>
           <img src="/image" alt="Random cached picture" />
-          <p>DevOps with Kubernetes 2026</p>
+          <form onsubmit="event.preventDefault();">
+            <input type="text" maxlength="140" placeholder="Enter a new todo (max 140 characters)" />
+            <button type="submit">Send</button>
+          </form>
+          <h2>Todos</h2>
+          <ul>
+            <li>Learn Kubernetes basics</li>
+            <li>Deploy application to cluster</li>
+            <li>Configure persistent volumes</li>
+          </ul>
         </body>
       </html>
     `);
