@@ -12,9 +12,16 @@ spec:
       labels:
         app: todo-app
     spec:
+      volumes:
+        - name: project-storage
+          persistentVolumeClaim:
+            claimName: project-pvc
       containers:
         - name: todo-app
-          image: 0455/todo-app:1.5
+          image: 0455/todo-app:1.12
           env:
             - name: PORT
               value: '3000'
+          volumeMounts:
+            - name: project-storage
+              mountPath: /usr/src/app/files
