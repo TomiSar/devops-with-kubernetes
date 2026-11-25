@@ -4,16 +4,30 @@ const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 const statusPath = path.join('/usr/src/app/files', 'output.txt');
-const countPath = path.join('/usr/src/app/files', 'count.txt');
+const PINGPONG_URL =
+  process.env.PINGPONG_URL || 'http://pingpong-svc:2345/pings';
 
-const server = http.createServer((req, res) => {
+const getPings = () =>
+  new Promise((resolve) => {
+    http
+      .get(PINGPONG_URL, (res) => {
+        let data = '';
+        res.on('data', (chunk) => {
+          data += chunk;
+        });
+        res.on('end', () => resolve(data.trim() || '0'));
+      })
+      .on('error', (err) => {
+        console.error('Error fetching pings:', err.message);
+        resolve('0');
+      });
+  });
+
+const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && req.url === '/') {
     try {
       const status = fs.readFileSync(statusPath, 'utf8').trim();
-      let count = '0';
-      if (fs.existsSync(countPath)) {
-        count = fs.readFileSync(countPath, 'utf8').trim() || '0';
-      }
+      const count = await getPings();
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end(`${status}.\nPing / Pongs: ${count}\n`);
     } catch (err) {
