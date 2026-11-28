@@ -4,6 +4,7 @@ const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 const statusPath = path.join('/usr/src/app/files', 'output.txt');
+const infoPath = path.join('/usr/src/app/config', 'information.txt');
 const PINGPONG_URL =
   process.env.PINGPONG_URL || 'http://pingpong-svc:2345/pings';
 
@@ -28,8 +29,18 @@ const server = http.createServer(async (req, res) => {
     try {
       const status = fs.readFileSync(statusPath, 'utf8').trim();
       const count = await getPings();
+      const fileContent = fs.existsSync(infoPath)
+        ? fs.readFileSync(infoPath, 'utf8').trim()
+        : '';
+      const message = process.env.MESSAGE || '';
+
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-      res.end(`${status}.\nPing / Pongs: ${count}\n`);
+      res.end(
+        `file content: ${fileContent}\n` +
+          `env variable: MESSAGE=${message}\n` +
+          `${status}.\n` +
+          `Ping / Pongs: ${count}\n`,
+      );
     } catch (err) {
       res.writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end('Status file not ready yet\n');
