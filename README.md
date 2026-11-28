@@ -24,3 +24,4 @@
 - [2.2.](https://github.com/TomiSar/devops-with-kubernetes/tree/2.2/the_project)
 - [2.3.](https://github.com/TomiSar/devops-with-kubernetes/tree/2.3/log_output)
 - [2.3.](https://github.com/TomiSar/devops-with-kubernetes/tree/2.3/pingpong)
+- [2.4.](https://github.com/TomiSar/devops-with-kubernetes/tree/2.4/the_project)
