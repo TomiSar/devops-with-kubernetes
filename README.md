@@ -21,3 +21,4 @@
 ### Part 2
 
 - [2.1.](https://github.com/TomiSar/devops-with-kubernetes/tree/2.1/log_output)
+- [2.2.](https://github.com/TomiSar/devops-with-kubernetes/tree/2.2/log_output)

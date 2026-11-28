@@ -79,68 +79,56 @@ const server = http.createServer((req, res) => {
         <head>
           <title>The Project</title>
           <style>
-            body {
-              font-family: sans-serif;
-              max-width: 600px;
-              margin: 2rem auto;
-              text-align: center;
-              color: #222;
-            }
-            img {
-              max-width: 300px;
-              border-radius: 10px;
-              box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-              margin-bottom: 1.5rem;
-            }
-            form {
-              display: flex;
-              gap: 0.5rem;
-              justify-content: center;
-              margin-bottom: 2rem;
-            }
-            input[type="text"] {
-              flex: 1;
-              padding: 0.6rem 0.8rem;
-              font-size: 1rem;
-              border: 2px solid #2e8b57;
-              border-radius: 6px;
-            }
-            button {
-              padding: 0.6rem 1.2rem;
-              font-size: 1rem;
-              background-color: #3cb371;
-              color: white;
-              border: none;
-              border-radius: 6px;
-              cursor: pointer;
-            }
-            ul {
-              list-style: none;
-              padding: 0;
-              text-align: left;
-            }
-            li {
-              background: #f8f9fa;
-              border-left: 4px solid #3cb371;
-              padding: 0.8rem 1rem;
-              margin-bottom: 0.6rem;
-              border-radius: 4px;
-            }
+            body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; text-align: center; color: #222; }
+            img { max-width: 300px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 1.5rem; }
+            form { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; }
+            input[type="text"] { flex: 1; padding: 0.6rem 0.8rem; font-size: 1rem; border: 2px solid #2e8b57; border-radius: 6px; }
+            button { padding: 0.6rem 1.2rem; font-size: 1rem; background-color: #3cb371; color: white; border: none; border-radius: 6px; cursor: pointer; }
+            ul { list-style: none; padding: 0; text-align: left; }
+            li { background: #f8f9fa; border-left: 4px solid #3cb371; padding: 0.8rem 1rem; margin-bottom: 0.6rem; border-radius: 4px; }
           </style>
         </head>
         <body>
           <h1>Todo App</h1>
           <img src="/image" alt="Random cached picture" />
-          <form onsubmit="event.preventDefault();">
-            <input type="text" maxlength="140" placeholder="Enter a new todo (max 140 characters)" />
+          <form id="todo-form">
+            <input id="todo-input" type="text" maxlength="140" placeholder="Enter a new todo (max 140 characters)" required />
             <button type="submit">Send</button>
           </form>
           <h2>Todos</h2>
-          <ul>
-            <li>Learn Kubernetes basics</li>
-            <li>Deploy application to cluster</li>
-            <li>Configure persistent volumes</li>
-          </ul>
+          <ul id="todo-list"></ul>
+
+          <script>
+            const listEl = document.getElementById('todo-list');
+            const formEl = document.getElementById('todo-form');
+            const inputEl = document.getElementById('todo-input');
+
+            const loadTodos = async () => {
+              const res = await fetch('/todos');
+              const todos = await res.json();
+              listEl.innerHTML = '';
+              todos.forEach((t) => {
+                const li = document.createElement('li');
+                li.textContent = t;
+                listEl.appendChild(li);
+              });
+            };
+
+            formEl.addEventListener('submit', async (e) => {
+              e.preventDefault();
+              const text = inputEl.value.trim();
+              if (!text) return;
+              await fetch('/todos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ todo: text })
+              });
+              inputEl.value = '';
+              await loadTodos();
+            });
+
+            loadTodos();
+          </script>
         </body>
       </html>
     `);
