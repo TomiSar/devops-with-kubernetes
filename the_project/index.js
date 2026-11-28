@@ -3,12 +3,16 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-const PORT = process.env.PORT || 3000;
-const directory = '/usr/src/app/files';
-const imagePath = path.join(directory, 'image.jpg');
-const CACHE_DURATION_MS = 10 * 60 * 1000;
+const PORT = process.env.PORT;
+const IMAGE_URL = process.env.IMAGE_URL;
+const IMAGE_DIR = process.env.IMAGE_DIR;
+const IMAGE_FILE = process.env.IMAGE_FILE;
+const CACHE_DURATION_MS =
+  Number(process.env.CACHE_DURATION_MINUTES) * 60 * 1000;
+const TODOS_API_PATH = process.env.TODOS_API_PATH;
 
-fs.mkdirSync(directory, { recursive: true });
+const imagePath = path.join(IMAGE_DIR, IMAGE_FILE);
+fs.mkdirSync(IMAGE_DIR, { recursive: true });
 
 let isFetching = false;
 
@@ -56,13 +60,13 @@ const downloadImage = (url) => {
 
 const ensureImage = () => {
   if (!fs.existsSync(imagePath)) {
-    downloadImage('https://picsum.photos/1200');
+    downloadImage(IMAGE_URL);
     return false;
   }
   const stats = fs.statSync(imagePath);
   const ageMs = Date.now() - stats.mtimeMs;
   if (ageMs > CACHE_DURATION_MS) {
-    downloadImage('https://picsum.photos/1200');
+    downloadImage(IMAGE_URL);
   }
   return true;
 };
@@ -99,12 +103,13 @@ const server = http.createServer((req, res) => {
           <ul id="todo-list"></ul>
 
           <script>
+            const API_PATH = ${JSON.stringify(TODOS_API_PATH)};
             const listEl = document.getElementById('todo-list');
             const formEl = document.getElementById('todo-form');
             const inputEl = document.getElementById('todo-input');
 
             const loadTodos = async () => {
-              const res = await fetch('/todos');
+              const res = await fetch(API_PATH);
               const todos = await res.json();
               listEl.innerHTML = '';
               todos.forEach((t) => {
@@ -118,7 +123,7 @@ const server = http.createServer((req, res) => {
               e.preventDefault();
               const text = inputEl.value.trim();
               if (!text) return;
-              await fetch('/todos', {
+              await fetch(API_PATH, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ todo: text })

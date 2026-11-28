@@ -1,6 +1,8 @@
 const http = require('http');
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
+const MAX_TODO_LENGTH = Number(process.env.MAX_TODO_LENGTH);
+
 const todos = [
   'Learn Kubernetes basics',
   'Deploy application to cluster',
@@ -20,9 +22,13 @@ const server = http.createServer((req, res) => {
       try {
         const parsed = JSON.parse(body);
         const text = typeof parsed.todo === 'string' ? parsed.todo.trim() : '';
-        if (!text || text.length > 140) {
+        if (!text || text.length > MAX_TODO_LENGTH) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: 'Todo must be 1–140 characters' }));
+          res.end(
+            JSON.stringify({
+              error: `Todo must be 1–${MAX_TODO_LENGTH} characters`,
+            }),
+          );
           return;
         }
         todos.push(text);

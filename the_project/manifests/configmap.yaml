@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-project-config
+  namespace: project
+data:
+  FRONTEND_PORT: '3000'
+  BACKEND_PORT: '3000'
+  IMAGE_URL: 'https://picsum.photos'
+  IMAGE_DIR: '/usr/src/app/files'
+  IMAGE_FILE: 'image.jpg'
+  CACHE_DURATION_MINUTES: '10'
+  TODOS_API_PATH: '/todos'
+  MAX_TODO_LENGTH: '140'

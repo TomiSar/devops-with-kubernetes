@@ -15,7 +15,15 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: 0455/todo-backend:2.2
+          image: 0455/todo-backend:2.6
           env:
             - name: PORT
-              value: '3000'
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-project-config
+                  key: BACKEND_PORT
+            - name: MAX_TODO_LENGTH
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-project-config
+                  key: MAX_TODO_LENGTH

@@ -19,10 +19,38 @@ spec:
             claimName: project-pvc
       containers:
         - name: todo-app
-          image: 0455/todo-app:2.2
+          image: 0455/todo-app:2.6
           env:
             - name: PORT
-              value: '3000'
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-project-config
+                  key: FRONTEND_PORT
+            - name: IMAGE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-project-config
+                  key: IMAGE_URL
+            - name: IMAGE_DIR
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-project-config
+                  key: IMAGE_DIR
+            - name: IMAGE_FILE
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-project-config
+                  key: IMAGE_FILE
+            - name: CACHE_DURATION_MINUTES
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-project-config
+                  key: CACHE_DURATION_MINUTES
+            - name: TODOS_API_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: todo-project-config
+                  key: TODOS_API_PATH
           volumeMounts:
             - name: project-storage
               mountPath: /usr/src/app/files
